@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>梦澄模组Yumesumi Mods</title>
+  <meta name="description" content="梦澄模组 · Yumesumi Mods">
+  <style>
+    :root {
+      --bg: #fafafa;
+      --fg: #1a1a1a;
+      --muted: #767676;
+      --line: #e4e4e4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111111;
+        --fg: #eeeeee;
+        --muted: #8c8c8c;
+        --line: #2a2a2a;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main {
+      text-align: center;
+      max-width: 34rem;
+      animation: rise 0.7s ease-out both;
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 6vw, 2.75rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .accent {
+      display: block;
+      margin: 1.25rem auto;
+      width: 3rem;
+      height: 2px;
+      background: var(--fg);
+      opacity: 0.25;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 2.25rem;
+      padding: 0.6rem 1.4rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--fg);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    a:hover,
+    a:focus-visible {
+      border-color: var(--fg);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      main {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>梦澄模组Yumesumi Mods</h1>
+    <span class="accent"></span>
+    <p>轻量、干净的模组作品集</p>
+    <a href="https://github.com/Yumesumi/Yumesumi-Mods" target="_blank" rel="noopener">GitHub</a>
+  </main>
+</body>
+</html>
