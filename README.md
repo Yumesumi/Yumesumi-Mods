@@ -2,7 +2,7 @@
 
 Yumesumi 开发的 Minecraft 模组作品站，视觉与主站 [梦澄中心](https://yumesumi.cyou) 保持一致。
 
-- 线上地址：<https://yumesumi.github.io/Yumesumi-Mods/>
+- 线上地址：<https://mods.yumesumi.cyou>
 - 主站：<https://yumesumi.cyou>
 
 当前收录：
@@ -43,8 +43,8 @@ npm run build    # 输出到 dist/
 npm run check    # 类型检查
 ```
 
-注意站点部署在子路径 `/Yumesumi-Mods/`，本地预览也要带上前缀。
-站内链接统一使用 `src/lib/url.ts` 的 `withBase()`，不要手写绝对路径。
+站点使用自定义域名，`base` 为 `/`。站内链接统一使用 `src/lib/url.ts` 的
+`withBase()`，不要手写绝对路径——换部署路径时只需改 `astro.config.mjs`。
 
 ## 新增模组
 

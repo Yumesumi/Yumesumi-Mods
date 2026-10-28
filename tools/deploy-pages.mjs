@@ -28,7 +28,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = resolve(ROOT, 'dist');
 const BRANCH = 'gh-pages';
 const REMOTE = 'origin';
-const SITE_URL = 'https://yumesumi.github.io/Yumesumi-Mods/';
+const SITE_URL = 'https://mods.yumesumi.cyou/';
 
 const run = (cmd, args, options = {}) => {
   return execFileSync(cmd, args, {
@@ -47,6 +47,11 @@ run('npm', ['run', 'build'], { shell: process.platform === 'win32' });
 
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error('[deploy] 构建产物缺少 dist/index.html，中止');
+  process.exit(1);
+}
+
+if (!existsSync(join(DIST, 'CNAME'))) {
+  console.error('[deploy] 构建产物缺少 dist/CNAME，自定义域名 mods.yumesumi.cyou 会失效，中止');
   process.exit(1);
 }
 

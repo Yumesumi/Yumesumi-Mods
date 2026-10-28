@@ -14,8 +14,8 @@ export const SITE = {
     '梦澄模组（Yumesumi Mods）收录 Yumesumi 开发的 Minecraft 模组：Yumesumi Economy 与 Yumesumi Finance，均面向 NeoForge 1.21.1。',
   locale: 'zh-CN',
   lang: 'zh-CN',
-  /** 本站地址（GitHub Pages 项目站点） */
-  url: 'https://yumesumi.github.io/Yumesumi-Mods',
+  /** 本站地址（GitHub Pages 自定义域名） */
+  url: 'https://mods.yumesumi.cyou',
   /** 主站：梦澄中心 */
   hubUrl: 'https://yumesumi.cyou',
   hubName: '梦澄中心',
