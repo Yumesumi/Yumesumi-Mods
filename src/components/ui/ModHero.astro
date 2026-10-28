@@ -1,0 +1,89 @@
+---
+/**
+ * 模组详情页首屏。
+ *
+ * 左侧是文字与元数据，右侧是封面；移动端封面置顶。
+ * 外部下载入口集中在 .mod-hero__links，避免散落在正文里。
+ */
+import type { Mod } from '@/data/mods';
+import { withBase } from '@/lib/url';
+import ModCover from '@/components/ui/ModCover.astro';
+
+interface Props {
+  mod: Mod;
+}
+
+const { mod } = Astro.props;
+---
+
+<section class="mod-hero">
+  <div class="ys-container ys-container--wide">
+    <a class="mod-hero__back" href={withBase('/')}>
+      <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+        <path
+          d="M19 12H5M11 6l-6 6 6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </svg>
+      全部模组
+    </a>
+
+    <div class="mod-hero__grid">
+      <div>
+        <div class="mod-hero__status-row">
+          <span class:list={['mod-hero__status', `is-${mod.status}`]}>{mod.statusLabel}</span>
+          <span class="mod-hero__version">v{mod.version}</span>
+        </div>
+
+        <h1 class="mod-hero__name">{mod.name}</h1>
+        <p class="mod-hero__zh">{mod.nameZh}</p>
+        <p class="mod-hero__intro">{mod.intro}</p>
+
+        <div class="mod-hero__links">
+          {mod.links.map((link) => (
+            <a class="mod-hero__link" href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label}
+              <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                <path
+                  d="M7 17 17 7M9 7h8v8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          ))}
+        </div>
+
+        <dl class="mod-hero__meta">
+          <div>
+            <dt>Minecraft</dt>
+            <dd>{mod.meta.mc}</dd>
+          </div>
+          <div>
+            <dt>加载器</dt>
+            <dd>{mod.meta.loader}</dd>
+          </div>
+          <div>
+            <dt>Java</dt>
+            <dd>{mod.meta.java}</dd>
+          </div>
+          {mod.downloads !== undefined && (
+            <div>
+              <dt>下载</dt>
+              <dd>{mod.downloads.toLocaleString('zh-CN')}</dd>
+            </div>
+          )}
+        </dl>
+      </div>
+
+      <ModCover mod={mod} class="mod-hero__cover" />
+    </div>
+  </div>
+</section>

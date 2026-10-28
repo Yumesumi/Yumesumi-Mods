@@ -1,0 +1,93 @@
+---
+/**
+ * 基础布局。
+ *
+ * 负责文档骨架、head 元信息、字体加载、跳转链接，
+ * 以及全站共享的环境层、导航与页脚。
+ */
+import { SITE } from '@/data/site';
+import Ambience from '@/components/ui/Ambience.astro';
+import SiteNav from '@/components/ui/SiteNav.astro';
+import SiteFooter from '@/components/ui/SiteFooter.astro';
+
+// 全局样式必须在这里导入：所有组件都依赖 tokens.css 提供的 CSS 变量
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE.description } = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const pageTitle = title ? `${title} · ${SITE.nameZh} ${SITE.name}` : `${SITE.nameZh} ${SITE.name}`;
+const canonical = new URL(Astro.url.pathname, SITE.url);
+const ogImage = new URL(SITE.ogImage, SITE.url);
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:url" content={canonical.href} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <!--
+      theme-color 必须是字面量，与 tokens.css 的 --ys-void 保持一致，
+      改动配色时需同步。
+    -->
+    <meta name="theme-color" content="#05050c" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="icon" href={`${base}brand/logo.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${base}brand/logo.svg`} />
+
+    <link
+      rel="preload"
+      href={`${base}fonts/misans-latin.woff2`}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href={`${base}fonts/fonts.css`} />
+  </head>
+
+  <body>
+    <a class="ys-skip-link" href="#main">
+      跳到主要内容
+    </a>
+
+    <Ambience />
+    <SiteNav />
+
+    <main id="main" class="page">
+      <slot />
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  /* 内容层必须压在固定环境层之上 */
+  .page {
+    position: relative;
+    z-index: var(--ys-z-content);
+  }
+</style>

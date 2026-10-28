@@ -1,0 +1,24 @@
+---
+/**
+ * 模组详情页布局。
+ *
+ * 在 BaseLayout 之上补一个共用的首屏，并引入详情页的公共样式。
+ */
+import BaseLayout from './BaseLayout.astro';
+import ModHero from '@/components/ui/ModHero.astro';
+import type { Mod } from '@/data/mods';
+import '../styles/mod-page.css';
+
+interface Props {
+  mod: Mod;
+  title: string;
+  description?: string;
+}
+
+const { mod, title, description = mod.intro } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <ModHero mod={mod} />
+  <slot />
+</BaseLayout>

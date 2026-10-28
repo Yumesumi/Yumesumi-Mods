@@ -1,0 +1,202 @@
+---
+/**
+ * Yumesumi Finance 详情页。
+ *
+ * 文案来源：模组仓库 README（版本 1.2.9）。
+ * 该模组尚未发布，页面不提供下载入口，只指向源码仓库。
+ */
+import ModPageLayout from '@/layouts/ModPageLayout.astro';
+import { MODS } from '@/data/mods';
+
+const mod = MODS.find((item) => item.key === 'finance')!;
+
+const features = [
+  {
+    title: '梦澄元与实体现金',
+    items: [
+      '内部统一使用 long cents，以“分”为最小单位',
+      '硬币：1、5、10、25、50 分与 1 元',
+      '纸币：1、2、5、10、20、50、100、500、1000 元',
+      '预留自定义现金数据组件，可扩展纪念钞',
+    ],
+  },
+  {
+    title: '银行与银行卡',
+    items: [
+      'ATM 方块：右键打开银行界面',
+      '银行卡首次使用绑定玩家 UUID，他人无法使用',
+      '梦澄银行管理卡仅 OP 可用',
+      '企业注册终端与 POS 机方块',
+    ],
+  },
+  {
+    title: '存取与转账',
+    items: [
+      '支持快捷面额、自定义金额与全部存取，均带二次确认',
+      '指定金额存款自动找零',
+      '支持玩家名、UUID 与官方国库 YB 转账',
+      '支持离线转账与转账备注',
+    ],
+  },
+  {
+    title: '交易明细',
+    items: [
+      '最多显示最近 1000 条记录',
+      '收入/支出筛选，按时间或金额排序',
+      '按玩家名、UUID、备注、金额搜索',
+      '悬浮玩家名显示 UUID，悬浮备注显示全文',
+    ],
+  },
+  {
+    title: '企业账户',
+    items: [
+      '企业代码全服唯一，3–4 位大写字母或数字',
+      '注册费 1000 梦澄元，直接进入官方国库',
+      '角色分为 OWNER、ADMIN、MEMBER',
+      '企业具有独立账户，不是玩家的第二个余额',
+    ],
+  },
+  {
+    title: '安全与运维',
+    items: [
+      '账户数据以服务端为准，基于 SavedData 持久化',
+      '银行请求带 requestId，服务端拒绝重放',
+      '账户可冻结，冻结后仍可查看明细但不能交易',
+      '界面提示按客户端语言显示',
+    ],
+  },
+];
+
+const denominations = [
+  { type: '硬币', values: '1 分 · 5 分 · 10 分 · 25 分 · 50 分 · 1 元' },
+  { type: '纸币', values: '1 · 2 · 5 · 10 · 20 · 50 · 100 · 500 · 1000 元' },
+];
+
+const principles = [
+  '服务端是金融数据的唯一权威',
+  '客户端只发送请求和展示服务端快照',
+  '金额统一使用 long cents',
+  '业务逻辑不直接依赖界面或网络包',
+  '新功能优先通过接口扩展，模块之间保持低依赖',
+];
+
+const roadmap = [
+  '支付系统、POS 机、玩家/商店收款',
+  '企业账户界面深化、组织权限与营收统计',
+  '活期/定期存款利息',
+  '理财产品',
+  '股票或基金市场',
+  '多币种与汇率系统',
+];
+---
+
+<ModPageLayout mod={mod} title={mod.name}>
+  <section class="mod-section" id="features">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Features</p>
+        <h2 class="mod-section__title">把银行搬进服务器</h2>
+        <p class="mod-section__lede">
+          从实体现金到企业账户，一套完整的游戏内金融闭环。所有账户数据都存在服务端，玩家换客户端也不会丢失。
+        </p>
+      </header>
+
+      <div class="feature-grid">
+        {features.map((feature, index) => (
+          <article class="feature">
+            <h3 class="feature__title">
+              <span class="feature__index">{String(index + 1).padStart(2, '0')}</span>
+              {feature.title}
+            </h3>
+            <ul>
+              {feature.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="mod-section" id="cash">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Cash</p>
+        <h2 class="mod-section__title">十五种实体现金</h2>
+        <p class="mod-section__lede">
+          现金是有重量的物品，可以放在箱子里、交给别人，或者存进银行。面额之间可以自由组合出任意金额。
+        </p>
+      </header>
+
+      <table class="data-table">
+        <caption>面额对照</caption>
+        <thead>
+          <tr>
+            <th scope="col">类型</th>
+            <th scope="col">面额</th>
+          </tr>
+        </thead>
+        <tbody>
+          {denominations.map((row) => (
+            <tr>
+              <td class="is-strong">{row.type}</td>
+              <td>{row.values}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mod-section" id="principles">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Design</p>
+        <h2 class="mod-section__title">设计原则</h2>
+      </header>
+
+      <div class="prose">
+        <ul class="roadmap">
+          {principles.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="mod-section" id="roadmap">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Roadmap</p>
+        <h2 class="mod-section__title">接下来要做的事</h2>
+        <p class="mod-section__lede">以下功能已经写进设计文档，但还没有进入当前版本。</p>
+      </header>
+
+      <ul class="roadmap">
+        {roadmap.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="mod-outro">
+    <div class="ys-container ys-container--wide">
+      <div class="mod-outro__box">
+        <p class="mod-outro__text">这个模组还在开发，源码已经公开。</p>
+        <div class="mod-outro__actions">
+          <a
+            class="mod-hero__link"
+            href="https://github.com/Yumesumi/Yumesumi-Finance"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            查看 GitHub 仓库
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</ModPageLayout>

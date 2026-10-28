@@ -1,0 +1,110 @@
+---
+/**
+ * 全站环境层。
+ *
+ * 固定在视口的多层背景：极光、网格、噪点与暗角。
+ * 与主站同样的思路——环境层永不随内容滚动消失，
+ * 因此所有内容容器都必须位于它之上（见 BaseLayout 的 .page）。
+ */
+---
+
+<div class="ambience" aria-hidden="true">
+  <span class="ambience__aurora ambience__aurora--a"></span>
+  <span class="ambience__aurora ambience__aurora--b"></span>
+  <span class="ambience__grid"></span>
+  <span class="ambience__grain"></span>
+  <span class="ambience__vignette"></span>
+</div>
+
+<style>
+  .ambience {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: var(--ys-void);
+  }
+
+  .ambience__aurora {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: var(--ys-aurora-opacity);
+    will-change: transform;
+  }
+
+  .ambience__aurora--a {
+    inset-block-start: -22vh;
+    inset-inline-start: -12vw;
+    inline-size: 62vw;
+    aspect-ratio: 1;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--ys-purple-deep) 62%, transparent) 0%,
+      transparent 68%
+    );
+    animation: ambience-drift-a var(--ys-dur-aurora-a) var(--ys-ease-smooth) infinite alternate;
+  }
+
+  .ambience__aurora--b {
+    inset-block-end: -26vh;
+    inset-inline-end: -16vw;
+    inline-size: 58vw;
+    aspect-ratio: 1;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--ys-purple) 28%, transparent) 0%,
+      transparent 66%
+    );
+    animation: ambience-drift-b var(--ys-dur-aurora-b) var(--ys-ease-smooth) infinite alternate;
+  }
+
+  .ambience__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--ys-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ys-grid-line) 1px, transparent 1px);
+    background-size: var(--ys-grid-size) var(--ys-grid-size);
+    mask-image: radial-gradient(120% 90% at 50% 0%, #000 0%, transparent 74%);
+  }
+
+  .ambience__grain {
+    position: absolute;
+    inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: var(--ys-grain-size) var(--ys-grain-size);
+    opacity: var(--ys-grain-opacity);
+  }
+
+  .ambience__vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      118% 96% at 50% 42%,
+      transparent 0%,
+      transparent 56%,
+      color-mix(in srgb, var(--ys-void) 78%, transparent) 100%
+    );
+    opacity: var(--ys-vignette-opacity);
+  }
+
+  @keyframes ambience-drift-a {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(6vw, 4vh, 0) scale(1.12);
+    }
+  }
+
+  @keyframes ambience-drift-b {
+    from {
+      transform: translate3d(0, 0, 0) scale(1.08);
+    }
+    to {
+      transform: translate3d(-5vw, -3vh, 0) scale(1);
+    }
+  }
+</style>

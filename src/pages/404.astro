@@ -1,0 +1,89 @@
+---
+/**
+ * 404 页面。
+ *
+ * GitHub Pages 会自动使用构建产物根目录的 404.html。
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+import { withBase } from '@/lib/url';
+---
+
+<BaseLayout title="页面不存在" description="这个地址没有对应的页面。">
+  <section class="notfound">
+    <div class="ys-container notfound__inner">
+      <p class="ys-eyebrow">Error 404</p>
+      <h1 class="notfound__code">404</h1>
+      <p class="notfound__text">这个地址没有对应的页面。可能是链接写错了，或者模组页还没上线。</p>
+      <div class="notfound__actions">
+        <a class="notfound__link" href={withBase('/')}>
+          返回首页
+        </a>
+        <a class="notfound__link" href={SITE.hubUrl} target="_blank" rel="noopener noreferrer">
+          {SITE.hubName}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-block-size: 80svh;
+    padding-block: calc(var(--ys-nav-height) + var(--ys-space-xl)) var(--ys-space-2xl);
+    text-align: center;
+  }
+
+  .notfound__code {
+    margin-block-start: var(--ys-space-2xs);
+    font-size: var(--ys-fs-display);
+    font-weight: var(--ys-weight-thin);
+    line-height: var(--ys-lh-tight);
+    letter-spacing: var(--ys-ls-tight);
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--ys-text) 60%, var(--ys-lavender)) 0%,
+      color-mix(in srgb, var(--ys-lavender) 70%, transparent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .notfound__text {
+    max-inline-size: 26rem;
+    margin-block-start: var(--ys-space-sm);
+    margin-inline: auto;
+    font-size: var(--ys-fs-sm);
+    line-height: var(--ys-lh-relaxed);
+    color: var(--ys-text-secondary);
+  }
+
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ys-space-2xs);
+    margin-block-start: var(--ys-space-lg);
+  }
+
+  .notfound__link {
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--ys-border-strong);
+    border-radius: var(--ys-radius-pill);
+    font-size: var(--ys-fs-xs);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-secondary);
+    transition:
+      color var(--ys-dur-base) var(--ys-ease-out),
+      border-color var(--ys-dur-base) var(--ys-ease-out);
+  }
+
+  .notfound__link:hover {
+    color: var(--ys-text);
+    border-color: var(--ys-purple);
+  }
+</style>

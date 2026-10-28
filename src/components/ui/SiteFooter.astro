@@ -1,0 +1,183 @@
+---
+/**
+ * 页脚。
+ *
+ * 结构与主站一致：品牌区 + 三列链接 + 版权行。
+ * 「梦澄中心」单独成列，是全站除了导航按钮之外的第二条回主站入口。
+ */
+import { SITE } from '@/data/site';
+import { MODS } from '@/data/mods';
+import { withBase } from '@/lib/url';
+import BrandLogo from '@/components/ui/BrandLogo.astro';
+
+const year = new Date().getFullYear();
+
+const externalLinks = [
+  { label: 'Modrinth · Economy', href: 'https://modrinth.com/mod/yumesumi_economy' },
+  {
+    label: 'CurseForge · Economy',
+    href: 'https://www.curseforge.com/minecraft/mc-mods/yumesumi-economy',
+  },
+  { label: 'GitHub · Finance', href: 'https://github.com/Yumesumi/Yumesumi-Finance' },
+  { label: 'GitHub · 本站', href: SITE.github },
+];
+---
+
+<footer class="site-footer">
+  <div class="ys-container ys-container--wide">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <BrandLogo size={38} label="" class="site-footer__mark" />
+        <div>
+          <p class="site-footer__name">{SITE.name}</p>
+          <p class="site-footer__zh">{SITE.nameZh}</p>
+        </div>
+      </div>
+
+      <p class="site-footer__tagline">{SITE.tagline}</p>
+    </div>
+
+    <div class="site-footer__grid">
+      <nav class="site-footer__col" aria-label="模组导航">
+        <h2 class="site-footer__title">模组</h2>
+        <ul>
+          {MODS.map((mod) => (
+            <li>
+              <a href={withBase(`/${mod.key}/`)}>{mod.nameZh}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__title">下载与源码</h2>
+        <ul>
+          {externalLinks.map((link) => (
+            <li>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <nav class="site-footer__col" aria-label="主站链接">
+        <h2 class="site-footer__title">主站</h2>
+        <ul>
+          <li>
+            <a href={SITE.hubUrl} target="_blank" rel="noopener noreferrer">
+              {SITE.hubName}
+            </a>
+          </li>
+          <li>
+            <a href="https://index.yumesumi.cyou/" target="_blank" rel="noopener noreferrer">
+              梦澄指数
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>
+        © {year} {SITE.nameZh} {SITE.name}. 保留所有权利。
+      </p>
+      <p class="site-footer__note">本站由 Astro 构建，部署于 GitHub Pages。</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: var(--ys-z-content);
+    padding-block: var(--ys-space-2xl) var(--ys-space-lg);
+    border-block-start: 1px solid var(--ys-border-subtle);
+    background-color: var(--ys-void);
+  }
+
+  .site-footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ys-space-md);
+    padding-block-end: var(--ys-space-lg);
+    border-block-end: 1px solid var(--ys-border-subtle);
+  }
+
+  .site-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--ys-space-sm);
+  }
+
+  .site-footer__mark {
+    opacity: 0.9;
+  }
+
+  .site-footer__name {
+    font-size: var(--ys-fs-sm);
+    font-weight: var(--ys-weight-medium);
+    letter-spacing: var(--ys-ls-wide);
+  }
+
+  .site-footer__zh {
+    font-size: var(--ys-fs-xs);
+    color: var(--ys-text-muted);
+  }
+
+  .site-footer__tagline {
+    max-inline-size: 24rem;
+    font-size: var(--ys-fs-xs);
+    line-height: var(--ys-lh-relaxed);
+    color: var(--ys-text-muted);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--ys-space-lg);
+    padding-block: var(--ys-space-lg);
+  }
+
+  .site-footer__title {
+    margin-block-end: var(--ys-space-sm);
+    font-size: var(--ys-fs-2xs);
+    font-weight: var(--ys-weight-medium);
+    letter-spacing: var(--ys-ls-wider);
+    text-transform: uppercase;
+    color: var(--ys-text-faint);
+  }
+
+  .site-footer__col ul {
+    display: grid;
+    gap: var(--ys-space-2xs);
+  }
+
+  .site-footer__col a {
+    font-size: var(--ys-fs-sm);
+    color: var(--ys-text-secondary);
+    transition: color var(--ys-dur-fast) var(--ys-ease-out);
+  }
+
+  .site-footer__col a:hover,
+  .site-footer__col a:focus-visible {
+    color: var(--ys-text);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ys-space-2xs) var(--ys-space-md);
+    justify-content: space-between;
+    padding-block-start: var(--ys-space-md);
+    border-block-start: 1px solid var(--ys-border-subtle);
+    font-size: var(--ys-fs-xs);
+    color: var(--ys-text-faint);
+  }
+</style>

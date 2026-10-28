@@ -1,0 +1,274 @@
+---
+/**
+ * Yumesumi Economy 详情页。
+ *
+ * 文案来源：Modrinth 项目页正文（2026-06-26 更新）与模组配置文件说明。
+ * 掉落率、数量、稀有度均按原文填写，不做加工。
+ */
+import ModPageLayout from '@/layouts/ModPageLayout.astro';
+import { MODS } from '@/data/mods';
+import { withBase } from '@/lib/url';
+
+const mod = MODS.find((item) => item.key === 'economy')!;
+
+const coins = [
+  {
+    name: '铜币',
+    en: 'Copper Coin',
+    rarity: '常见',
+    rarityClass: 'common',
+    chance: '94.9%',
+    amount: '1–2',
+    note: '基础货币',
+  },
+  {
+    name: '银币',
+    en: 'Silver Coin',
+    rarity: '罕见',
+    rarityClass: 'uncommon',
+    chance: '5.0%',
+    amount: '1',
+    note: '8 铜币 = 1 银币',
+  },
+  {
+    name: '金币',
+    en: 'Gold Coin',
+    rarity: '稀有',
+    rarityClass: 'rare',
+    chance: '0.1%',
+    amount: '1',
+    note: '8 银币 = 1 金币',
+  },
+  {
+    name: '钻石币',
+    en: 'Diamond Coin',
+    rarity: '史诗',
+    rarityClass: 'epic',
+    chance: '0.0%',
+    amount: '1',
+    note: '附魔光效，且防火',
+  },
+];
+
+const exchange = [
+  {
+    label: '合成 · 向上',
+    title: '8 枚低阶 → 1 枚高阶',
+    text: '在工作台里用 8 枚低一级的硬币围成一圈，得到 1 枚高一级的硬币。',
+  },
+  {
+    label: '合成 · 向下',
+    title: '1 枚高阶 → 8 枚低阶',
+    text: '反向配方同样存在，高阶硬币可以直接拆回 8 枚低阶硬币。',
+  },
+  {
+    label: '手持 · 右键',
+    title: '整组按 8:1 升级',
+    text: '手持硬币右键，会把整组硬币一次性兑换成更高一级的硬币。',
+  },
+  {
+    label: '手持 · 潜行右键',
+    title: '整组按 1:8 拆分',
+    text: '潜行时右键，则把整组硬币降级拆分，换取数量更多的低阶硬币。',
+  },
+];
+
+const configRows = [
+  { key: 'general.enable_drops', desc: '启用或禁用怪物掉落梦澄币' },
+  { key: '<coin>.chance', desc: '怪物掉落概率，单位为百分比' },
+  { key: '<coin>.min_count', desc: '最小掉落数量' },
+  { key: '<coin>.max_count', desc: '最大掉落数量' },
+];
+
+const gallery = [
+  {
+    src: '/mods/economy/recipe-copper.png',
+    alt: '工作台里 1 枚银币拆分为 8 枚铜币的配方',
+    caption: '银币 → 8 枚铜币',
+  },
+  {
+    src: '/mods/economy/recipe-silver.png',
+    alt: '8 枚铜币合成银币，以及金币拆分为 8 枚银币的配方',
+    caption: '8 枚铜币 → 银币；金币 → 8 枚银币',
+  },
+  {
+    src: '/mods/economy/recipe-gold.png',
+    alt: '8 枚银币合成金币，以及钻石币拆分为 8 枚金币的配方',
+    caption: '8 枚银币 → 金币；钻石币 → 8 枚金币',
+  },
+  {
+    src: '/mods/economy/recipe-diamond.png',
+    alt: '8 枚金币合成钻石币的配方',
+    caption: '8 枚金币 → 钻石币',
+  },
+];
+---
+
+<ModPageLayout mod={mod} title={mod.name}>
+  <section class="mod-section" id="coins">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Coins</p>
+        <h2 class="mod-section__title">四档硬币</h2>
+        <p class="mod-section__lede">
+          所有硬币都可堆叠。击杀怪物时按概率掉落，阶梯越小越难拿到——钻石币默认不会掉落，只能靠合成。
+        </p>
+      </header>
+
+      <table class="data-table">
+        <caption>硬币与默认掉落</caption>
+        <thead>
+          <tr>
+            <th scope="col">硬币</th>
+            <th scope="col">稀有度</th>
+            <th scope="col" class="is-num">
+              默认掉落
+            </th>
+            <th scope="col" class="is-num">
+              数量
+            </th>
+            <th scope="col">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          {coins.map((coin) => (
+            <tr>
+              <td class="is-strong">
+                {coin.name} <span class="coin-en">{coin.en}</span>
+              </td>
+              <td>
+                <span class:list={['rarity', `rarity--${coin.rarityClass}`]}>{coin.rarity}</span>
+              </td>
+              <td class="is-num">{coin.chance}</td>
+              <td class="is-num">{coin.amount}</td>
+              <td>{coin.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mod-section" id="exchange">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Exchange</p>
+        <h2 class="mod-section__title">两种兑换方式</h2>
+        <p class="mod-section__lede">
+          兑换链为 铜 → 银 → 金 → 钻石。合成表适合精确操作，手持右键适合在战斗后快速整理背包。
+        </p>
+      </header>
+
+      <div class="action-grid">
+        {exchange.map((item) => (
+          <article class="action">
+            <p class="action__label">{item.label}</p>
+            <h3 class="action__title">{item.title}</h3>
+            <p class="action__text">{item.text}</p>
+          </article>
+        ))}
+      </div>
+
+      <p class="callout" style="margin-block-start: var(--ys-space-md)">
+        若背包已满，多出来的兑换产物会直接掉落在玩家身边，不会凭空消失。
+      </p>
+    </div>
+  </section>
+
+  <section class="mod-section" id="config">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Configuration</p>
+        <h2 class="mod-section__title">全部数值都能改</h2>
+        <p class="mod-section__lede">
+          模组会生成一个 common 配置文件，掉落开关、概率与数量都在里面，改完重启即可生效。
+        </p>
+      </header>
+
+      <div class="prose">
+        <p>
+          配置文件位置：<code>.minecraft/config/yumesumi_eco-common.toml</code>
+        </p>
+        <p>
+          <code>&lt;coin&gt;</code> 对应四个币种段：<code>copper_coin</code>、
+          <code>silver_coin</code>、<code>gold_coin</code>、<code>diamond_coin</code>。
+        </p>
+      </div>
+
+      <table class="data-table" style="margin-block-start: var(--ys-space-md)">
+        <caption>可用配置项</caption>
+        <thead>
+          <tr>
+            <th scope="col">键</th>
+            <th scope="col">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          {configRows.map((row) => (
+            <tr>
+              <td>
+                <code>{row.key}</code>
+              </td>
+              <td>{row.desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mod-section" id="gallery">
+    <div class="ys-container ys-container--wide">
+      <header class="mod-section__head">
+        <p class="ys-eyebrow">Gallery</p>
+        <h2 class="mod-section__title">合成表一览</h2>
+      </header>
+
+      <div class="gallery">
+        {gallery.map((shot) => (
+          <figure>
+            <img
+              src={withBase(shot.src)}
+              alt={shot.alt}
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+            />
+            <figcaption>{shot.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="mod-outro">
+    <div class="ys-container ys-container--wide">
+      <div class="mod-outro__box">
+        <p class="mod-outro__text">下一款是仍在开发中的金融系统。</p>
+        <div class="mod-outro__actions">
+          <a class="mod-hero__link" href={withBase('/finance/')}>
+            看看 Yumesumi Finance
+          </a>
+          <a
+            class="mod-hero__link"
+            href={mod.links[0]!.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            在 Modrinth 下载
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</ModPageLayout>
+
+<style>
+  .coin-en {
+    margin-inline-start: 0.35rem;
+    font-size: var(--ys-fs-2xs);
+    font-weight: var(--ys-weight-regular);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-faint);
+  }
+</style>

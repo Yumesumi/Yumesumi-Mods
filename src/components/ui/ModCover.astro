@@ -1,0 +1,248 @@
+---
+/**
+ * 模组封面。
+ *
+ * 两张封面共用同一套「展台」：深色底 + 网格 + 光晕 + 地面投影，
+ * 差别只在中央的像素主角——Economy 是四枚硬币，Finance 是银行卡与现金。
+ * 像素图统一用 image-rendering: pixelated 放大，避免插值发虚。
+ */
+import type { Mod } from '@/data/mods';
+import { withBase } from '@/lib/url';
+
+interface Props {
+  mod: Mod;
+  class?: string;
+}
+
+const { mod, class: className = '' } = Astro.props;
+---
+
+<div class:list={['mod-cover', className]} style={`--mod-accent: var(${mod.accentVar})`}>
+  <div class="mod-cover__field" aria-hidden="true">
+    <span class="mod-cover__grid"></span>
+    <span class="mod-cover__aura"></span>
+    <span class="mod-cover__ring"></span>
+    <span class="mod-cover__floor"></span>
+  </div>
+
+  {mod.specimen === 'economy' ? (
+    <div class="mod-cover__specimen mod-cover__specimen--coins" aria-hidden="true">
+      <img
+        src={withBase('/mods/economy/coins-strip.png')}
+        alt=""
+        width="111"
+        height="42"
+        decoding="async"
+        draggable="false"
+      />
+    </div>
+  ) : (
+    <div class="mod-cover__specimen mod-cover__specimen--bank" aria-hidden="true">
+      <img
+        class="mod-cover__bill"
+        src={withBase('/mods/finance/bill_100_yuan.png')}
+        alt=""
+        width="32"
+        height="32"
+        decoding="async"
+        draggable="false"
+      />
+      <img
+        class="mod-cover__card"
+        src={withBase('/mods/finance/bank_card.png')}
+        alt=""
+        width="128"
+        height="128"
+        decoding="async"
+        draggable="false"
+      />
+      <img
+        class="mod-cover__coin"
+        src={withBase('/mods/finance/coin_1_yuan.png')}
+        alt=""
+        width="32"
+        height="32"
+        decoding="async"
+        draggable="false"
+      />
+    </div>
+  )}
+</div>
+
+<style>
+  .mod-cover {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid var(--ys-border-subtle);
+    border-radius: var(--ys-radius-lg);
+    background:
+      radial-gradient(
+        88% 116% at 28% 0%,
+        color-mix(in srgb, var(--mod-accent) 15%, transparent) 0%,
+        transparent 60%
+      ),
+      linear-gradient(168deg, var(--ys-night) 0%, var(--ys-abyss) 58%, var(--ys-void) 100%);
+    transition: border-color var(--ys-dur-slow) var(--ys-ease-out);
+  }
+
+  /* 悬停时卡片边框泛出该模组的强调色 */
+  :global(a:hover) > .mod-cover,
+  .mod-cover:hover {
+    border-color: color-mix(in srgb, var(--mod-accent) 34%, transparent);
+  }
+
+  .mod-cover__field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* 科技网格：只在中心可见，边缘渐隐 */
+  .mod-cover__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--ys-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ys-grid-line) 1px, transparent 1px);
+    background-size: var(--ys-grid-size) var(--ys-grid-size);
+    mask-image: radial-gradient(70% 70% at 50% 45%, #000 0%, transparent 78%);
+  }
+
+  .mod-cover__aura {
+    position: absolute;
+    inset-block-start: 46%;
+    inset-inline-start: 50%;
+    inline-size: min(64%, 22rem);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--mod-accent) 26%, transparent) 0%,
+      color-mix(in srgb, var(--mod-accent) 8%, transparent) 46%,
+      transparent 72%
+    );
+    filter: blur(2px);
+  }
+
+  /* 展台圆环：给像素主角一个仪器感的地标 */
+  .mod-cover__ring {
+    position: absolute;
+    inset-block-start: 47%;
+    inset-inline-start: 50%;
+    inline-size: min(72%, 25rem);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border: 1px solid color-mix(in srgb, var(--mod-accent) 11%, transparent);
+    border-radius: 50%;
+  }
+
+  /* 地面投影，让像素物件有落点 */
+  .mod-cover__floor {
+    position: absolute;
+    inset-block-end: 20%;
+    inset-inline-start: 50%;
+    inline-size: min(52%, 17rem);
+    block-size: 1.6rem;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--ys-void) 90%, transparent) 0%,
+      transparent 100%
+    );
+    opacity: 0.85;
+  }
+
+  /* ---------- 像素主角 ---------- */
+
+  .mod-cover__specimen {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    align-content: center;
+  }
+
+  .mod-cover__specimen img {
+    image-rendering: pixelated;
+    user-select: none;
+  }
+
+  .mod-cover__specimen--coins img {
+    /* 111 × 42 的原始条带，按整数倍放大保持像素锐利 */
+    inline-size: clamp(11rem, 26vw, 20.8rem);
+    block-size: auto;
+    filter: drop-shadow(0 18px 22px rgb(3 2 10 / 62%));
+    animation: cover-bob 7s var(--ys-ease-smooth) infinite;
+  }
+
+  /*
+    Finance 以银行卡为主角建立方形舞台，
+    硬币与纸币按百分比挂在舞台外侧，随卡片一起缩放。
+  */
+  .mod-cover__specimen--bank {
+    position: relative;
+    display: block;
+    inline-size: clamp(9rem, 22vw, 15rem);
+    aspect-ratio: 1;
+  }
+
+  .mod-cover__card,
+  .mod-cover__coin,
+  .mod-cover__bill {
+    position: absolute;
+    block-size: auto;
+    filter: drop-shadow(0 16px 24px rgb(3 2 10 / 66%));
+  }
+
+  .mod-cover__card {
+    inset-block-start: 4%;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    rotate: -7deg;
+    animation: cover-bob 8s var(--ys-ease-smooth) infinite;
+  }
+
+  .mod-cover__coin {
+    inset-block-start: 2%;
+    inset-inline-start: -15%;
+    inline-size: 31%;
+    rotate: 8deg;
+    animation: cover-bob 6.4s var(--ys-ease-smooth) infinite;
+    animation-delay: -2.2s;
+  }
+
+  .mod-cover__bill {
+    inset-block-end: -2%;
+    inset-inline-end: -24%;
+    inline-size: 44%;
+    rotate: 12deg;
+    animation: cover-bob 7.6s var(--ys-ease-smooth) infinite;
+    animation-delay: -4.1s;
+  }
+
+  /* 浮动只改 transform，rotate 是独立属性，不会被覆盖 */
+  @keyframes cover-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-9px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mod-cover__specimen--coins img,
+    .mod-cover__card,
+    .mod-cover__coin,
+    .mod-cover__bill {
+      animation: none;
+    }
+  }
+</style>

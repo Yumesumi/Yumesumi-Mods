@@ -1,0 +1,788 @@
+---
+/**
+ * 首页。
+ *
+ * 结构与主站一致：首屏 → 模组列表 → 设计原则。
+ * 首屏沿用主站的巨幅字标与指针扫光，保证两个站点看起来是同一套视觉。
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+import { SORTED_MODS } from '@/data/mods';
+import { withBase } from '@/lib/url';
+import ModCover from '@/components/ui/ModCover.astro';
+
+const released = SORTED_MODS.filter((mod) => mod.status === 'released').length;
+
+const principles = [
+  {
+    title: '轻量优先',
+    text: '不改变原版的节奏与平衡，只补上服务器真正缺的那一层。没有强制依赖，也没有常驻的系统负担。',
+  },
+  {
+    title: '服务端权威',
+    text: '账户余额、掉落判定与交易记录都以服务端为准，客户端只负责发起请求与展示结果。',
+  },
+  {
+    title: '可配置',
+    text: '掉落概率、硬币数量、企业注册费——能调的数值都放在配置文件里，不强迫你修改代码。',
+  },
+];
+---
+
+<BaseLayout>
+  <section class="hero" data-hero>
+    <div class="hero__backdrop" aria-hidden="true">
+      <span class="hero__glow"></span>
+    </div>
+
+    <div class="hero__content ys-container ys-container--wide">
+      <p class="ys-eyebrow hero__eyebrow">Minecraft · NeoForge 1.21.1</p>
+
+      <h1 class="hero__wordmark" data-spotlight>
+        <span class="hero__wordmark-line">YUMESUMI</span>
+        <span class="hero__wordmark-line">MODS</span>
+      </h1>
+
+      <p class="hero__name-zh" data-spotlight>
+        梦澄模组
+      </p>
+
+      <p class="hero__lede">{SITE.tagline}。</p>
+
+      <div class="hero__actions">
+        <a class="hero__cta" href="#mods">
+          <span>查看模组</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+            <path
+              d="M5 12h14M13 6l6 6-6 6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </a>
+
+        <a class="hero__hub" href={SITE.hubUrl} target="_blank" rel="noopener noreferrer">
+          返回{SITE.hubName}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mods" id="mods">
+    <div class="ys-container ys-container--wide">
+      <header class="mods__head">
+        <p class="ys-eyebrow">Mods</p>
+        <h2 class="mods__title">正在维护的模组</h2>
+        <p class="mods__lede">
+          每一个模组都只为解决一个具体问题而存在。点开任意一张卡片，可以看到功能、配置与下载方式。
+        </p>
+      </header>
+
+      <dl class="mods__stats">
+        <div>
+          <dt>模组总数</dt>
+          <dd>{String(SORTED_MODS.length).padStart(2, '0')}</dd>
+        </div>
+        <div>
+          <dt>已发布</dt>
+          <dd>{String(released).padStart(2, '0')}</dd>
+        </div>
+        <div>
+          <dt>加载器</dt>
+          <dd>NeoForge</dd>
+        </div>
+        <div>
+          <dt>游戏版本</dt>
+          <dd>1.21.1</dd>
+        </div>
+      </dl>
+
+      <ul class="mods__list">
+        {SORTED_MODS.map((mod, index) => (
+          <li class="mod-card">
+            <a class="mod-card__link" href={withBase(`/${mod.key}/`)}>
+              <div class="mod-card__media">
+                <ModCover mod={mod} />
+                <span class="mod-card__index">{String(index + 1).padStart(2, '0')}</span>
+                <span class:list={['mod-card__status', `is-${mod.status}`]}>
+                  <span class="mod-card__dot" aria-hidden="true" />
+                  {mod.statusLabel}
+                </span>
+              </div>
+
+              <div class="mod-card__body">
+                <div class="mod-card__title-row">
+                  <h3 class="mod-card__name">{mod.name}</h3>
+                  <span class="mod-card__version">v{mod.version}</span>
+                </div>
+                <p class="mod-card__zh">{mod.nameZh}</p>
+                <p class="mod-card__summary">{mod.summary}</p>
+
+                <ul class="mod-card__highlights">
+                  {mod.highlights.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+
+                <span class="mod-card__cta">
+                  查看模组
+                  <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+                    <path
+                      d="M5 12h14M13 6l6 6-6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))}
+
+        <li class="mod-card mod-card--placeholder">
+          <div class="mod-card__placeholder">
+            <p class="ys-eyebrow">Next</p>
+            <p class="mod-card__placeholder-text">下一个模组还在做。</p>
+            <a
+              class="mod-card__placeholder-link"
+              href={SITE.hubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              去{SITE.hubName}看其他项目
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="principles">
+    <div class="ys-container ys-container--wide">
+      <header class="principles__head">
+        <p class="ys-eyebrow">Approach</p>
+        <h2 class="principles__title">做模组的三条底线</h2>
+      </header>
+
+      <ol class="principles__list">
+        {principles.map((item, index) => (
+          <li class="principle">
+            <span class="principle__index">{String(index + 1).padStart(2, '0')}</span>
+            <h3 class="principle__title">{item.title}</h3>
+            <p class="principle__text">{item.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- 首屏 ---------- */
+
+  .hero {
+    position: relative;
+    display: grid;
+    align-content: center;
+    min-block-size: 92svh;
+    padding-block: calc(var(--ys-nav-height) + var(--ys-space-2xl)) var(--ys-space-2xl);
+    overflow: clip;
+    isolation: isolate;
+    background: radial-gradient(
+      120% 78% at 50% 6%,
+      color-mix(in srgb, var(--ys-deep) 46%, transparent) 0%,
+      color-mix(in srgb, var(--ys-night) 26%, transparent) 44%,
+      transparent 76%
+    );
+  }
+
+  .hero__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero__glow {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: min(92vw, 58rem);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--ys-purple) 20%, transparent) 0%,
+      color-mix(in srgb, var(--ys-purple-deep) 10%, transparent) 44%,
+      transparent 70%
+    );
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .hero__eyebrow {
+    margin-block-end: var(--ys-space-md);
+  }
+
+  .hero__wordmark {
+    --mx: 50%;
+    --my: 50%;
+    display: grid;
+    gap: 0.04em;
+    margin: 0;
+    font-size: var(--ys-fs-display);
+    font-weight: var(--ys-weight-thin);
+    line-height: var(--ys-lh-tight);
+    letter-spacing: var(--ys-ls-tight);
+    background-image:
+      radial-gradient(
+        ellipse calc(var(--ys-spotlight-size) * 1.25) calc(var(--ys-spotlight-size) * 0.6) at
+          var(--mx) var(--my),
+        var(--ys-text) 0%,
+        color-mix(in srgb, var(--ys-text) 62%, transparent) 46%,
+        transparent 80%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--ys-text) 52%, var(--ys-lavender)) 20%,
+        color-mix(in srgb, var(--ys-lavender) 88%, var(--ys-text)) 78%,
+        color-mix(in srgb, var(--ys-lavender) 82%, var(--ys-purple-bright)) 100%
+      );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 36px color-mix(in srgb, var(--ys-void) 85%, transparent));
+  }
+
+  .hero__wordmark-line {
+    display: block;
+  }
+
+  .hero__name-zh {
+    --mx: 50%;
+    --my: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ys-space-md);
+    margin-block: var(--ys-space-sm) 0;
+    padding-inline-start: var(--ys-ls-cinematic);
+    font-size: var(--ys-fs-4xl);
+    font-weight: var(--ys-weight-thin);
+    line-height: 1.12;
+    letter-spacing: var(--ys-ls-cinematic);
+    background-image:
+      radial-gradient(
+        ellipse calc(var(--ys-spotlight-size) * 1.15) calc(var(--ys-spotlight-size) * 0.55) at
+          var(--mx) var(--my),
+        var(--ys-text) 0%,
+        color-mix(in srgb, var(--ys-text) 60%, transparent) 46%,
+        transparent 80%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--ys-text) 70%, var(--ys-lavender)) 0%,
+        color-mix(in srgb, var(--ys-text) 38%, var(--ys-lavender)) 100%
+      );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 22px var(--ys-void));
+  }
+
+  .hero__name-zh::before,
+  .hero__name-zh::after {
+    content: '';
+    flex: 0 0 auto;
+    inline-size: clamp(1.5rem, 7vw, 4.5rem);
+    block-size: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--ys-lavender) 55%, transparent) 100%
+    );
+  }
+
+  .hero__name-zh::after {
+    transform: scaleX(-1);
+  }
+
+  .hero__lede {
+    max-inline-size: 34rem;
+    margin-block-start: var(--ys-space-lg);
+    margin-inline: auto;
+    font-size: var(--ys-fs-base);
+    line-height: var(--ys-lh-relaxed);
+    color: var(--ys-text-secondary);
+    text-shadow:
+      0 0 14px var(--ys-void),
+      0 0 28px var(--ys-void);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ys-space-md);
+    margin-block-start: var(--ys-space-xl);
+  }
+
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ys-space-2xs);
+    padding: var(--ys-space-xs) var(--ys-space-md);
+    border: 1px solid var(--ys-border-strong);
+    border-radius: var(--ys-radius-pill);
+    font-size: var(--ys-fs-sm);
+    font-weight: var(--ys-weight-medium);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text);
+    transition:
+      border-color var(--ys-dur-base) var(--ys-ease-out),
+      background-color var(--ys-dur-base) var(--ys-ease-out),
+      box-shadow var(--ys-dur-base) var(--ys-ease-out),
+      transform var(--ys-dur-base) var(--ys-ease-out);
+  }
+
+  .hero__cta:hover,
+  .hero__cta:focus-visible {
+    border-color: var(--ys-purple);
+    background-color: color-mix(in srgb, var(--ys-purple) 14%, transparent);
+    box-shadow:
+      var(--ys-shadow-glow),
+      inset 0 0 18px color-mix(in srgb, var(--ys-purple) 12%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .hero__cta svg {
+    transition: transform var(--ys-dur-base) var(--ys-ease-out);
+  }
+
+  .hero__cta:hover svg {
+    transform: translateX(3px);
+  }
+
+  .hero__hub {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--ys-space-xs) var(--ys-space-md);
+    font-size: var(--ys-fs-sm);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-muted);
+    border: 1px solid transparent;
+    border-radius: var(--ys-radius-pill);
+    transition:
+      color var(--ys-dur-base) var(--ys-ease-out),
+      border-color var(--ys-dur-base) var(--ys-ease-out);
+  }
+
+  .hero__hub:hover,
+  .hero__hub:focus-visible {
+    color: var(--ys-text);
+    border-color: var(--ys-border);
+  }
+
+  /* ---------- 模组列表 ---------- */
+
+  .mods {
+    position: relative;
+    padding-block: var(--ys-section-pad);
+  }
+
+  .mods__head {
+    margin-block-end: var(--ys-space-lg);
+  }
+
+  /* 数据条：四项等宽，用细分隔线切分，作为列表前的索引 */
+  .mods__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-block-end: var(--ys-space-xl);
+    border-block: 1px solid var(--ys-border-subtle);
+  }
+
+  .mods__stats div {
+    display: grid;
+    gap: 0.2rem;
+    padding: var(--ys-space-sm) var(--ys-space-md);
+    border-inline-start: 1px solid var(--ys-border-subtle);
+  }
+
+  .mods__stats div:first-child {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .mods__stats dt {
+    font-size: var(--ys-fs-2xs);
+    letter-spacing: var(--ys-ls-wider);
+    text-transform: uppercase;
+    color: var(--ys-text-faint);
+  }
+
+  .mods__stats dd {
+    font-size: var(--ys-fs-lg);
+    font-weight: var(--ys-weight-thin);
+    letter-spacing: var(--ys-ls-snug);
+    color: var(--ys-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mods__title {
+    margin-block-start: var(--ys-space-xs);
+    font-size: var(--ys-fs-2xl);
+    font-weight: var(--ys-weight-light);
+    letter-spacing: var(--ys-ls-tight);
+  }
+
+  .mods__lede {
+    margin-block-start: var(--ys-space-sm);
+    max-inline-size: 34rem;
+    font-size: var(--ys-fs-sm);
+    line-height: var(--ys-lh-relaxed);
+    color: var(--ys-text-secondary);
+  }
+
+  .mods__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ys-space-xl) var(--ys-space-lg);
+  }
+
+  .mod-card__link {
+    display: flex;
+    flex-direction: column;
+    block-size: 100%;
+  }
+
+  .mod-card__media {
+    position: relative;
+  }
+
+  .mod-card__index {
+    position: absolute;
+    inset-block-start: var(--ys-space-sm);
+    inset-inline-start: var(--ys-space-sm);
+    font-size: var(--ys-fs-2xs);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-secondary);
+    text-shadow: 0 1px 8px var(--ys-void);
+  }
+
+  .mod-card__status {
+    position: absolute;
+    inset-block-start: var(--ys-space-sm);
+    inset-inline-end: var(--ys-space-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--ys-border-subtle);
+    border-radius: var(--ys-radius-pill);
+    background-color: color-mix(in srgb, var(--ys-void) 66%, transparent);
+    backdrop-filter: blur(8px);
+    font-size: var(--ys-fs-2xs);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-secondary);
+  }
+
+  .mod-card__dot {
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background-color: var(--ys-text-muted);
+  }
+
+  .mod-card__status.is-released .mod-card__dot {
+    background-color: #7fd6a6;
+    box-shadow: 0 0 8px rgb(127 214 166 / 55%);
+  }
+
+  .mod-card__status.is-development .mod-card__dot {
+    background-color: var(--ys-lavender);
+    box-shadow: 0 0 8px var(--ys-accent-glow);
+  }
+
+  .mod-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding-block-start: var(--ys-space-md);
+  }
+
+  .mod-card__title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ys-space-sm);
+  }
+
+  .mod-card__name {
+    font-size: var(--ys-fs-xl);
+    font-weight: var(--ys-weight-light);
+    letter-spacing: var(--ys-ls-snug);
+    transition: color var(--ys-dur-base) var(--ys-ease-out);
+  }
+
+  .mod-card__link:hover .mod-card__name {
+    color: var(--ys-lavender-soft);
+  }
+
+  .mod-card__version {
+    flex: none;
+    font-size: var(--ys-fs-2xs);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-faint);
+  }
+
+  .mod-card__zh {
+    margin-block-start: var(--ys-space-3xs);
+    font-size: var(--ys-fs-sm);
+    color: var(--ys-text-muted);
+  }
+
+  .mod-card__summary {
+    margin-block-start: var(--ys-space-sm);
+    font-size: var(--ys-fs-sm);
+    line-height: var(--ys-lh-relaxed);
+    color: var(--ys-text-secondary);
+  }
+
+  .mod-card__highlights {
+    display: grid;
+    gap: var(--ys-space-3xs);
+    margin-block-start: var(--ys-space-sm);
+  }
+
+  .mod-card__highlights li {
+    position: relative;
+    padding-inline-start: var(--ys-space-sm);
+    font-size: var(--ys-fs-xs);
+    color: var(--ys-text-muted);
+  }
+
+  .mod-card__highlights li::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0.55em;
+    inset-inline-start: 0;
+    inline-size: 5px;
+    block-size: 1px;
+    background-color: var(--ys-text-faint);
+  }
+
+  .mod-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ys-space-3xs);
+    margin-block-start: auto;
+    padding-block-start: var(--ys-space-md);
+    font-size: var(--ys-fs-2xs);
+    font-weight: var(--ys-weight-medium);
+    letter-spacing: var(--ys-ls-wider);
+    text-transform: uppercase;
+    color: var(--ys-lavender);
+  }
+
+  .mod-card__cta svg {
+    transition: transform var(--ys-dur-base) var(--ys-ease-out);
+  }
+
+  .mod-card__link:hover .mod-card__cta svg {
+    transform: translateX(4px);
+  }
+
+  /* ---------- 占位卡片 ---------- */
+
+  .mod-card--placeholder {
+    grid-column: 1 / -1;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    min-block-size: 12rem;
+    border: 1px dashed var(--ys-border-subtle);
+    border-radius: var(--ys-radius-lg);
+  }
+
+  .mod-card__placeholder {
+    padding: var(--ys-space-xl) var(--ys-space-md);
+    text-align: center;
+  }
+
+  .mod-card__placeholder-text {
+    margin-block: var(--ys-space-xs) var(--ys-space-sm);
+    font-size: var(--ys-fs-lg);
+    font-weight: var(--ys-weight-light);
+    color: var(--ys-text-secondary);
+  }
+
+  .mod-card__placeholder-link {
+    font-size: var(--ys-fs-xs);
+    color: var(--ys-text-muted);
+    border-block-end: 1px solid var(--ys-border);
+    transition: color var(--ys-dur-fast) var(--ys-ease-out);
+  }
+
+  .mod-card__placeholder-link:hover {
+    color: var(--ys-text);
+  }
+
+  /* ---------- 原则 ---------- */
+
+  .principles {
+    position: relative;
+    padding-block: var(--ys-section-pad);
+  }
+
+  .principles__head {
+    margin-block-end: var(--ys-space-xl);
+  }
+
+  .principles__title {
+    margin-block-start: var(--ys-space-xs);
+    font-size: var(--ys-fs-2xl);
+    font-weight: var(--ys-weight-light);
+    letter-spacing: var(--ys-ls-tight);
+  }
+
+  .principles__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--ys-space-lg);
+  }
+
+  .principle {
+    padding-block-start: var(--ys-space-md);
+    border-block-start: 1px solid var(--ys-border);
+  }
+
+  .principle__index {
+    font-size: var(--ys-fs-2xs);
+    letter-spacing: var(--ys-ls-wide);
+    color: var(--ys-text-faint);
+  }
+
+  .principle__title {
+    margin-block: var(--ys-space-xs) var(--ys-space-2xs);
+    font-size: var(--ys-fs-lg);
+    font-weight: var(--ys-weight-regular);
+  }
+
+  .principle__text {
+    font-size: var(--ys-fs-sm);
+    line-height: var(--ys-lh-relaxed);
+    color: var(--ys-text-muted);
+  }
+
+  /* ---------- 响应式 ---------- */
+
+  @media (max-width: 1023px) {
+    .mods__list {
+      grid-template-columns: 1fr;
+    }
+
+    .principles__list {
+      grid-template-columns: 1fr;
+      gap: var(--ys-space-md);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      min-block-size: 88svh;
+    }
+
+    .hero__lede {
+      font-size: var(--ys-fs-sm);
+    }
+
+    .hero__actions {
+      flex-direction: column;
+      gap: var(--ys-space-sm);
+    }
+
+    .hero__name-zh {
+      gap: var(--ys-space-sm);
+    }
+
+    .mods__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mods__stats div:nth-child(3) {
+      padding-inline-start: 0;
+      border-inline-start: 0;
+    }
+
+    .mods__stats div:nth-child(n + 3) {
+      border-block-start: 1px solid var(--ys-border-subtle);
+    }
+  }
+</style>
+
+<script>
+  /**
+   * 首屏文字扫光：把指针位置写进 --mx / --my。
+   * 减少动态效果时不绑定，保留居中的静态高光。
+   */
+  function initHeroSpotlight() {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    if (!hero) return;
+
+    const targets = Array.from(hero.querySelectorAll<HTMLElement>('[data-spotlight]'));
+    if (targets.length === 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+
+    const paint = () => {
+      frame = 0;
+      for (const el of targets) {
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--mx', `${x - rect.left}px`);
+        el.style.setProperty('--my', `${y - rect.top}px`);
+      }
+    };
+
+    const reset = () => {
+      if (frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      for (const el of targets) {
+        el.style.setProperty('--mx', '50%');
+        el.style.setProperty('--my', '50%');
+      }
+    };
+
+    hero.addEventListener(
+      'pointermove',
+      (event) => {
+        x = event.clientX;
+        y = event.clientY;
+        if (!frame) frame = requestAnimationFrame(paint);
+      },
+      { passive: true },
+    );
+
+    hero.addEventListener('pointerleave', reset);
+  }
+
+  initHeroSpotlight();
+</script>

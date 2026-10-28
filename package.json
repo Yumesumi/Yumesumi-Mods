@@ -1,0 +1,28 @@
+{
+  "name": "yumesumi-mods",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Yumesumi Mods · 梦澄模组 — Minecraft 模组作品站",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "node tools/deploy-pages.mjs",
+    "check": "astro check",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "astro": "7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
+    "typescript": "6.0.3"
+  }
+}
